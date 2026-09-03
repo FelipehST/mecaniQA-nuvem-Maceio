@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mecaniqa-config
+  namespace: mecaniqa
+data:
+  MYSQL_DATABASE: mecaniqa
+  MYSQL_HOST: mysql
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
