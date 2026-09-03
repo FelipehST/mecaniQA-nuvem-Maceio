@@ -1,0 +1,62 @@
+services:
+  mysql:
+    build:
+      context: ./mysql
+    container_name: mecaniqa-mysql
+    environment:
+      MYSQL_DATABASE: mecaniqa
+      MYSQL_USER: mecaniqa
+      MYSQL_PASSWORD: mecaniqa123
+      MYSQL_ROOT_PASSWORD: root123
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mecaniqa-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -proot123 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  redis:
+    build:
+      context: ./redis
+    container_name: mecaniqa-redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - mecaniqa-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mecaniqa-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mecaniqa
+      SPRING_DATASOURCE_USERNAME: mecaniqa
+      SPRING_DATASOURCE_PASSWORD: mecaniqa123
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mecaniqa-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  mecaniqa-network:
+    driver: bridge
