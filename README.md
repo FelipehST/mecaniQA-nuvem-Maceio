@@ -1,6 +1,6 @@
 # MecaniQA - OAT 1 - Nuvem
 
-Repositório da OAT 1 da disciplina de Nuvem do Programa de Trainee 2026.2.
+Repositório da OAT 1 da disciplina de Nuvem 
 
 ## Equipe
 
